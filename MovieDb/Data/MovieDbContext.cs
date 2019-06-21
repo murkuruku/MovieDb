@@ -23,15 +23,7 @@ namespace MovieDataBase.Data
             modelBuilder.Entity<MovieActors>()
                 .HasKey(m => new { m.MovieId, m.ActorId });
 
-            modelBuilder.Entity<MovieActors>()
-                .HasOne(m => m.Movie)
-                .WithMany(a => a.MovieActors)
-                .HasForeignKey(k => k.MovieId);
-
-            modelBuilder.Entity<MovieActors>()
-                .HasOne(a => a.Actor)
-                .WithMany(m => m.MovieActors)
-                .HasForeignKey(k => k.ActorId);
+         
         }
     }
 }

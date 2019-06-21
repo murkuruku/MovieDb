@@ -8,6 +8,11 @@ namespace MovieDataBase.Models
 {
     public class Movie
     {
+        public Movie ()
+        {
+            MovieActors = new List<MovieActors>();
+        }
+
         public int MovieId { get; set; }
         [Required, StringLength(80)]
         public string Title { get; set; }
@@ -15,6 +20,7 @@ namespace MovieDataBase.Models
         public int ReleasYear { get; set; }
         public Genre Genre { get; set; }
 
-        public IList<MovieActors> MovieActors { get; set; }
+        public List<MovieActors> MovieActors { get; set; }
     }
 }
+

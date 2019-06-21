@@ -26,6 +26,18 @@ namespace MovieDb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+           {
+               options.AddPolicy("VueCrosPolicy", biulder =>
+               {
+                   biulder
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials()
+                   .WithOrigins("http://localhost:8080");
+               });
+           });
+
             services.AddDbContextPool<MovieDbContext>(options => {
 
                 options.UseSqlServer(Configuration.GetConnectionString("MovieDataBaseDb"));
@@ -55,7 +67,7 @@ namespace MovieDb
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseCors("VueCrosPolicy");
             app.UseHttpsRedirection();
             app.UseDefaultFiles(); // Enables default file mapping on the web root.
             app.UseStaticFiles(); // Marks files on the web root as servable.

@@ -28,6 +28,42 @@ namespace MovieDb.Controllers
             return await _context.Movies.ToListAsync();
         }
 
+        // GET: api/Movies/All
+        [HttpGet("All")]
+        public IActionResult All()
+        {
+            List<Movie> movies = _context.Movies.ToList();
+
+            var actors = (from a in _context.Actors
+                          join ma in _context.MovieActors on a.ActorId equals ma.ActorId
+                          select new
+                          {
+                              ma.MovieId,
+                              a.Age,
+                              a.Name,
+                              a.ActorId
+                          }).ToList();
+
+            var result = movies.GroupJoin(actors,
+                         movie => movie.MovieId,
+                         actor => actor.MovieId,
+                         (movie, actorColletion) =>
+                             new
+                             {
+                                 movieId = movie.MovieId,
+                                 movieTitle = movie.Title,
+                                 movieGenre = movie.Genre,
+                                 movieReleas = movie.ReleasYear,
+                                 Actors = actorColletion.Select(actor => {
+                                     var act = new { Id = actor.ActorId, Name = actor.Name, Age = actor.Age };
+                                     return act;
+                                 })
+
+                             });
+
+            return Ok(result);
+        }
+
         // GET: api/Movies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Movie>> GetMovie(int id)

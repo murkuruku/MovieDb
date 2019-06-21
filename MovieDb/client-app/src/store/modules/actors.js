@@ -7,11 +7,11 @@ export default {
   },
   actions: {
     AddActor({ dispatch }, actor) {
-      axios.post('https://localhost:44365/api/actors', actor)
+      axios.post('https://localhost:5001/api/actors', actor)
         .then(() => dispatch('AllActors'));
     },
     AllActors({ commit }) {
-      axios.get('https://localhost:44365/api/actors')
+      axios.get('https://localhost:5001/api/actors')
         .then(result => commit('allActors', result.data));
     },
   },
@@ -32,6 +32,9 @@ export default {
         return act;
       },
       );
+    },
+    lastId(state) {
+      return state.actors[state.actors.length - 1].actorId;
     },
   },
 };

@@ -2,19 +2,19 @@
   <div>
     <form>
       <div class="form-group">
-        <label>Titlee</label>
-        <input v-model="movie.Title" type="text" class="form-control">
+        <label>Title</label>
+        <input v-model="movie.title" type="text" class="form-control">
       </div>
       <div class="form-group">
         <label>Releas Year</label>
-        <input v-model="movie.ReleasYear" type="number" class="form-control">
+        <input v-model="movie.releasYear" type="number" class="form-control">
       </div>
       <div class="form-group">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <label class="input-group-text">Genre</label>
           </div>
-          <select class="custom-select" v-model="movie.Genre">
+          <select class="custom-select" v-model="movie.genre">
             <option value="None">None</option>
             <option value="Action">Action</option>
             <option value="Fantasy">Fantasy</option>
@@ -46,20 +46,25 @@ export default {
   computed: {
   ...mapState('actors', { allActors: 'actors' }),
   ...mapGetters('actors',{ selectedActors: 'selectedActros'}),
-  ...mapGetters('movies', {addedMovie: 'addedMovie'})
+  ...mapGetters('movies',{ lastId: 'lastId'}),
   },
     created() {
-        this.AllActors()
+      if(this.AllActors.length == 0){
+        this.AllActors();
+      };
+      this.AllMovies();
   },
   methods: {
-    ...mapActions('movies', ['AddMovie']),
+    ...mapActions('movies', ['AddMovie','AllMovies']),
     ...mapActions('actors', ['AllActors']),
-    ...mapActions('movieActors', ['AddMovieActors']),
+
     addMovie(movie) {
-      this.AddMovie(movie);
-      if(this.SelectedActors(this.selectedActors, this.allActors) != [])
+      console.log(movie);
+      if(this.SelectedActors(this.selectedActors, this.allActors).length != 0)
         {
-          this.select(this.addedMovie);
+          this.AddMovie(this.select(movie));
+        } else {
+          this.AddMovie(movie);
         };
 
     },
@@ -79,18 +84,22 @@ export default {
     select(movie) {
         let actors = this.SelectedActors(this.selectedActors, this.allActors);
         for(let i = 0; i< actors.length; i++){
-           let  movieActor = [movie];
-            movieActor.push(actors[i]);
-            this.AddMovieActors(movieActor);
+           movie.movieActors.push({
+             actorId: actors[i].actorId,
+             movieId: this.lastId + 1,
+           });
         };
+        return movie;
     },
   },
   data() {
     return {
       movie: {
-        Title: '',
-        ReleasYear: '',
-         Genre: '',
+        // movieId: 1,
+        title: '',
+        releasYear: '',
+        genre: '',
+        movieActors: [],
       },
     };
   }
