@@ -37,9 +37,10 @@ namespace MovieDb
                    .WithOrigins("http://localhost:8080");
                });
            });
-
+            
             services.AddDbContextPool<MovieDbContext>(options => {
 
+                options.EnableSensitiveDataLogging(true);
                 options.UseSqlServer(Configuration.GetConnectionString("MovieDataBaseDb"));
             });
 

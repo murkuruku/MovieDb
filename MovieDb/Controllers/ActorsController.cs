@@ -28,6 +28,47 @@ namespace MovieDb.Controllers
             return await _context.Actors.ToListAsync();
         }
 
+        // GET: api/Actors/All
+        [HttpGet("All")]
+        public  IEnumerable<Actor> All()
+        {
+            var actors =  _context.Actors.ToList();
+
+            var movies = (from a in _context.Movies
+                          join ma in _context.MovieActors on a.MovieId equals ma.MovieId
+                          select new
+                          {
+                              ma.ActorId,
+                              a.Title,
+                              a.ReleasYear,
+                              a.Genre,
+                              a.MovieId
+                          }).ToList();
+
+            var result = actors.GroupJoin(movies,
+                         actor => actor.ActorId,
+                         movie => movie.ActorId,
+                         (actor, movieColletion) =>
+                             new Actor
+                             {
+                                 ActorId = actor.ActorId,
+                                 Name = actor.Name,
+                                 Age = actor.Age,
+                                 MovieActors = movieColletion.Select(movie => {
+                                     var mv = new MovieActors
+                                     {
+                                         MovieId = movie.MovieId,
+                                         ActorId= actor.ActorId,
+                                     };
+                                     return mv;
+                                 })
+
+                             });
+
+            return result;
+        }
+
+
         // GET: api/Actors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Actor>> GetActor(int id)
@@ -42,6 +83,7 @@ namespace MovieDb.Controllers
             return actor;
         }
 
+        
         // PUT: api/Actors/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutActor(int id, Actor actor)
@@ -52,6 +94,11 @@ namespace MovieDb.Controllers
             }
 
             _context.Entry(actor).State = EntityState.Modified;
+            var actors = new List<MovieActors>();
+            actors.AddRange(actor.MovieActors);
+            var tablema = _context.MovieActors.Where(x => x.ActorId == actor.ActorId).ToList();
+            _context.MovieActors.RemoveRange(tablema);
+            _context.MovieActors.AddRange(actors);
 
             try
             {

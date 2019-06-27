@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Add Actor</h1>
       <form>
       <div class="form-group">
         <label >Name</label>
@@ -17,7 +18,10 @@
         </div>
       </div>
       <div class="btn btn-group-lg btn-danger" @click="addActor(actor)">
-        submit
+        Add Actor
+      </div>
+      <div class="btn btn-group-lg btn-primary" @click="navigation()">
+        Cancel
       </div>
     </form>
   </div>
@@ -29,9 +33,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 export default {
   name: 'AddActor',
   created() {
-    if(this.allMovies.length == 0){
-      this.AllMovies();
-    }
+    this.AllMovies();
     this.AllActors();
   },
   computed: {
@@ -50,15 +52,19 @@ export default {
     };
   },
   methods: {
+      navigation() {
+        this.$router.push({name:'MovieDb'});
+      },
     ...mapActions('actors', ['AddActor', 'AllActors']),
-    ...mapActions('movies', ['AllMovies']),
+    ...mapActions('movies', ['AllMovies', 'ShowMovies']),
     addActor(actor) {
-      console.log(actor);
           if(this.SelectedMovies(this.selectedMovies, this.allMovies).length != 0){
             this.AddActor(this.select(actor))
           }else {
             this.AddActor(actor);
+            this.ShowMovies();
           };
+          this.navigation();
     },
     SelectedMovies(selectedMv, allMv){
       var selected = [];
@@ -85,7 +91,7 @@ export default {
         return actor;
     },
   },
-};
+}
 </script>
 
 <style >

@@ -15,6 +15,6 @@ namespace MovieDataBase.Models
         public int ActorId { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
-        public List<MovieActors> MovieActors { get; set; }
+        public IEnumerable<MovieActors> MovieActors { get; set; }
     }
 }

@@ -88,7 +88,12 @@ namespace MovieDb.Controllers
             }
 
             _context.Entry(movie).State = EntityState.Modified;
-
+            var moviesss = new List<MovieActors>();
+            moviesss.AddRange(movie.MovieActors);
+            var tablema = _context.MovieActors.Where(x => x.MovieId == movie.MovieId).ToList();
+            _context.MovieActors.RemoveRange(tablema);
+            _context.MovieActors.AddRange(moviesss);
+                                
             try
             {
                 await _context.SaveChangesAsync();

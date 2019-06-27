@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Add Movie</h1>
     <form>
       <div class="form-group">
         <label>Title</label>
@@ -29,10 +30,8 @@
           <label for="checkbox">{{actor.name}}</label>
         </div>
       </div>
-      <div
-        class="btn btn-group-lg btn-danger"
-        @click="addMovie(movie)"
-      >submit</div>
+      <div class="btn btn-group-lg btn-danger"  @click="addMovie(movie)">Add movie</div>
+      <div class="btn btn-group-lg btn-primary"  @click="navigation()">Cancel</div>
     </form>
   </div>
 </template>
@@ -55,6 +54,9 @@ export default {
       this.AllMovies();
   },
   methods: {
+    navigation() {
+        this.$router.push({name:'MovieDb'});
+      },
     ...mapActions('movies', ['AddMovie','AllMovies']),
     ...mapActions('actors', ['AllActors']),
 
@@ -66,7 +68,7 @@ export default {
         } else {
           this.AddMovie(movie);
         };
-
+        this.navigation();
     },
     SelectedActors(selectedActors, allActors){
       var selected = [];
@@ -86,7 +88,7 @@ export default {
         for(let i = 0; i< actors.length; i++){
            movie.movieActors.push({
              actorId: actors[i].actorId,
-             movieId: this.lastId + 1,
+             movieId: 1 + this.lastId,
            });
         };
         return movie;
@@ -95,7 +97,6 @@ export default {
   data() {
     return {
       movie: {
-        // movieId: 1,
         title: '',
         releasYear: '',
         genre: '',

@@ -23,7 +23,7 @@ namespace MovieDataBase.Data
             modelBuilder.Entity<MovieActors>()
                 .HasKey(m => new { m.MovieId, m.ActorId });
 
-         
+            
         }
     }
 }
