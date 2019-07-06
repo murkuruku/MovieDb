@@ -1,0 +1,20 @@
+	Movie Database
+	
+Movie Database is for adding/editing movie and actors.
+One movie can have many actors and vice versa.
+To start you can add few actors and then add movie and choose wich actors are acting in that movie.
+
+Prereqiurments
+Visual studio 2017
+.Net Core 2.2 sdk
+SQL server
+
+Installing
+oper cmd go to ...\MovieDb\MovieDb\client-app
+run npm install
+then go to ...\MovieDb\MovieDb
+run dotnet ef database update
+
+How to run
+open solution in Visual Studio
+run the application

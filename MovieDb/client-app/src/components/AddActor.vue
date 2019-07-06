@@ -2,27 +2,25 @@
   <div>
     <h1>Add Actor</h1>
     <form>
-      <div class="form-group">
+      <div class="group">
         <label>Name</label>
         <input v-model="actor.name" type="text"  name="Name" v-validate="'required'"
-        :class="{'form-control': true, 'error': errors.has('Name') }" />
+        :class="{'error': errors.has('Name') }" />
         <span v-show="errors.has('Name')" class="text-danger">{{ errors.first('Name') }}</span>
       </div>
-      <div class="form-group">
+      <div class="group">
         <label>Age</label>
         <input v-model="actor.age" type="age" name="Age" v-validate="'required|age:86'"
-        :class="{'form-control': true, 'error': errors.has('Age') }"/>
+        :class="{'error': errors.has('Age') }"/>
         <span v-show="errors.has('Age')" class="text-danger">{{ errors.first('Age') }}</span>
       </div>
-      <div class="form-group">
-        <h2>Movies</h2>
-        <div v-for="(movie, index) in selectedMovies" :key="index">
-          <input type="checkbox" v-model="movie.selected" />
-          <label for="checkbox">{{movie.title}}</label>
-        </div>
+      <h2>Movies</h2>
+      <div class="group" v-for="(movie, index) in selectedMovies" :key="index">
+          <input type="checkbox" :id="movie.id" v-model="movie.selected" />
+          <label :for="movie.id">{{movie.title}}</label>
       </div>
-      <div class="btn btn-group-lg btn-danger" @click="addActor(actor)">Add Actor</div>
-      <div class="btn btn-group-lg btn-primary" @click="navigation('MovieDb')">Cancel</div>
+      <button type="button" class="add" @click="addActor(actor)">Add Actor</button>
+      <button type="button" class="cancel" @click="navigation('MovieDb')">Cancel</button>
     </form>
   </div>
 </template>
@@ -84,9 +82,6 @@ export default {
 };
 </script>
 
-<style scoped>
-.error {
-      border-color: #E84444;
-      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(232,68,68,.6);
-    }
+<style >
+
 </style>

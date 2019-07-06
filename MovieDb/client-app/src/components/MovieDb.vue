@@ -160,7 +160,58 @@ export default {
 </script>
 
 <style >
-.navigation >*,.edit,.delete {
+.group>*{
+	border-radius:28px;
+	border:2px solid #0e0f0f;
+	display:inline-block;
+	cursor:pointer;
+	color:#0f0505d7;
+	font-family:Arial;
+	font-size:19px;
+	padding:10px 36px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+  margin: 10px;
+  display: inline-block;
+}
+
+.delete,.add{
+   background-color:#f16a52;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:2px solid #f50707;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:19px;
+	padding:10px 36px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+  margin: 10px;
+}
+.cancel{
+   background-color:#f3ef1a;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:2px solid #f7f304;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:19px;
+	padding:10px 36px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+  margin: 10px;
+}
+.error {
+      border-color: #E84444;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(232,68,68,.6);
+    }
+.navigation >*,.edit {
 	background-color:#44c767;
 	-moz-border-radius:28px;
 	-webkit-border-radius:28px;
@@ -176,7 +227,7 @@ export default {
 	text-shadow:0px 1px 0px #2f6627;
   margin: 10px;
 }
-.navigation>*:active,.navigation>*:focus,.delete:focus{
+.navigation>*:active,.navigation>*:focus,.delete:focus,.group>*:focus,.edit:focus,.cancel:focus{
   outline: none;
   position:relative;
 	top:1px;

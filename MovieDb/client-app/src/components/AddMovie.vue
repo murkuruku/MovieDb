@@ -2,40 +2,34 @@
   <div>
     <h1>Add Movie</h1>
     <form >
-      <div>
+      <div class="group">
         <label>Title</label>
         <input v-model="movie.title" type="text" name="Title" v-validate="'required'"
         :class="{'form-control': true, 'error': errors.has('Title') }">
         <span v-show="errors.has('Title')" class="text-danger">{{ errors.first('Title') }}</span>
       </div>
-      <div class="form-group"  >
+      <div class="group"  >
         <label class="control-label" for="Releas Year">Releas Year</label>
         <input v-model="movie.releasYear" type="age" v-validate="'required|releasYear:1888'" name="Releas Year"
         class="form-control" :class="{'error': errors.has('Releas Year')}">
        <span v-show="errors.has('Releas Year')" class="text-danger">{{ errors.first('Releas Year') }}</span>
       </div>
-      <div class="form-group">
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <label class="input-group-text">Genre</label>
-          </div>
-          <select class="custom-select" v-model="movie.genre">
+      <div class="group">
+          <label >Genre</label>
+          <select v-model="movie.genre">
             <option value="None"  >None</option>
             <option  value="Action">Action</option>
             <option value="Fantasy">Fantasy</option>
             <option value="Drama">Drama</option>
           </select>
-        </div>
       </div>
-      <div class="form-group">
-        <h2>Actors</h2>
-        <div v-for="(actor, index) in selectedActors" :key="index">
-          <input type="checkbox" v-model="actor.selected">
-          <label for="checkbox">{{actor.name}}</label>
-        </div>
-      </div>
-      <div class="btn btn-group-lg btn-danger"   @click="addMovie(movie)">Add movie</div>
-      <div class="btn btn-group-lg btn-primary"  @click="navigation('MovieDb')">Cancel</div>
+      <h2>Actors</h2>
+      <div class="group" v-for="(actor, index) in selectedActors" :key="index">
+        <input type="checkbox" :id="actor.id" v-model="actor.selected">
+        <label :for="actor.id">{{actor.name}}</label>
+       </div>
+      <button type="button" class="add"   @click="addMovie(movie)">Add movie</button>
+      <button type="button" class="cancel"  @click="navigation('MovieDb')">Cancel</button>
     </form>
   </div>
 </template>
@@ -90,9 +84,6 @@ export default {
 };
 </script>
 
-<style  scoped>
-.error {
-      border-color: #E84444;
-      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(232,68,68,.6);
-    }
+<style >
+
 </style>
