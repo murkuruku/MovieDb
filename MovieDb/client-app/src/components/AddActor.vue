@@ -1,99 +1,92 @@
 <template>
   <div>
     <h1>Add Actor</h1>
-      <form>
+    <form>
       <div class="form-group">
-        <label >Name</label>
-        <input v-model="actor.name" type="text" class="form-control">
+        <label>Name</label>
+        <input v-model="actor.name" type="text"  name="Name" v-validate="'required'"
+        :class="{'form-control': true, 'error': errors.has('Name') }" />
+        <span v-show="errors.has('Name')" class="text-danger">{{ errors.first('Name') }}</span>
       </div>
       <div class="form-group">
         <label>Age</label>
-        <input v-model="actor.age" type="number" class="form-control">
+        <input v-model="actor.age" type="age" name="Age" v-validate="'required|age:86'"
+        :class="{'form-control': true, 'error': errors.has('Age') }"/>
+        <span v-show="errors.has('Age')" class="text-danger">{{ errors.first('Age') }}</span>
       </div>
       <div class="form-group">
         <h2>Movies</h2>
-        <div v-for="(movie, index) in selectedMovies" :key="index" >
-          <input type="checkbox" v-model="movie.selected">
+        <div v-for="(movie, index) in selectedMovies" :key="index">
+          <input type="checkbox" v-model="movie.selected" />
           <label for="checkbox">{{movie.title}}</label>
         </div>
       </div>
-      <div class="btn btn-group-lg btn-danger" @click="addActor(actor)">
-        Add Actor
-      </div>
-      <div class="btn btn-group-lg btn-primary" @click="navigation()">
-        Cancel
-      </div>
+      <div class="btn btn-group-lg btn-danger" @click="addActor(actor)">Add Actor</div>
+      <div class="btn btn-group-lg btn-primary" @click="navigation('MovieDb')">Cancel</div>
     </form>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from "vuex";
+import { CommonMethods} from '../mixins/CommonMethods'
+import Vue from "vue";
+import VeeValidate from "vee-validate";
+Vue.use(VeeValidate)
+
 
 export default {
-  name: 'AddActor',
+  name: "AddActor",
+  computed: {
+    ...mapState("movies", { allMovies: "movies" }),
+    ...mapGetters("movies", { selectedMovies: "selectedMovies" }),
+    ...mapGetters("actors", { lastId: "lastId" })
+  },
+  data() {
+    return {
+      actor: {
+        movieActors: []
+      }
+    };
+  },
+  mixins: [CommonMethods],
   created() {
     this.AllMovies();
     this.AllActors();
   },
-  computed: {
-    ...mapState('movies',{allMovies: 'movies'}),
-    ...mapGetters('movies',{ selectedMovies: 'selectedMovies'}),
-    ...mapGetters('actors', {lastId: 'lastId'}),
-
-     },
-  data() {
-    return {
-      actor: {
-        name: '',
-        age: '',
-        movieActors:[],
-      },
-    };
-  },
   methods: {
-      navigation() {
-        this.$router.push({name:'MovieDb'});
-      },
-    ...mapActions('actors', ['AddActor', 'AllActors']),
-    ...mapActions('movies', ['AllMovies', 'ShowMovies']),
     addActor(actor) {
-          if(this.SelectedMovies(this.selectedMovies, this.allMovies).length != 0){
-            this.AddActor(this.select(actor))
-          }else {
-            this.AddActor(actor);
-            this.ShowMovies();
-          };
-          this.navigation();
-    },
-    SelectedMovies(selectedMv, allMv){
-      var selected = [];
-      for(let i = 0;i < selectedMv.length;i++){
-        if(selectedMv[i].selected == true){
-          for(let j=0;j<allMv.length; j++){
-            if(selectedMv[i].id == allMv[j].movieId){
-              selected.push(allMv[j]);
+      const movies = this.selectedObj(this.selectedMovies,this.allMovies);
+      this.$validator.validateAll().then(results => {
+        if(results){
+          let self = this;
+           var addActorPromise = new Promise(function(resolve, reject) {
+             if (movies.length != 0) {
+              self.AddActor(self.select(actor, self.lastId, movies));
+            } else {
+              self.AddActor(actor);
             }
-          }
+            resolve();
+            }
+          );
+          var showmovie = new Promise(function(resolve, reject){
+            const a = self.ShowMovies();
+            resolve(a);
+            }
+          );
+          addActorPromise.then(()=>{showmovie.then(() =>{this.navigation('MovieDb')})});
         }
-      }
-
-      return selected;
+      })
     },
-    select(actor) {
-        let movies = this.SelectedMovies(this.selectedMovies, this.allMovies);
-        for(let i = 0; i< movies.length; i++){
-           actor.movieActors.push({
-             actorId: this.lastId + 1,
-             movieId: movies[i].movieId,
-           });
-        };
-        return actor;
-    },
-  },
-}
+    ...mapActions("actors", ["AddActor", "AllActors"]),
+    ...mapActions("movies", ["AllMovies", "ShowMovies"]),
+  }
+};
 </script>
 
-<style >
-
+<style scoped>
+.error {
+      border-color: #E84444;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(232,68,68,.6);
+    }
 </style>

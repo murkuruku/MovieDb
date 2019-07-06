@@ -8,25 +8,29 @@ export default {
   },
   actions: {
     AddMovie({ dispatch }, movie) {
-      axios.post('https://localhost:5001/api/movies', movie)
+      axios.post('https://localhost:44365/api/movies', movie)
         .then(() => dispatch('ShowMovies'));
     },
     AllMovies({ commit }) {
-      axios.get('https://localhost:5001/api/movies')
+      axios.get('https://localhost:44365/api/movies')
         .then(results => commit('allMovies', results.data));
     },
     ShowMovies({ commit }) {
-      console.log('pisam');
-      axios.get('https://localhost:5001/api/movies/all')
-        .then(result => commit('yo', result.data));
+      return new Promise((resolve) => {
+        axios.get('https://localhost:44365/api/movies/all')
+          .then((result) => {
+            commit('loadMovies', result.data);
+            resolve('Done');
+          });
+      });
     },
     EditMovie({ dispatch }, movie) {
-      const url = `https://localhost:5001/api/movies/${movie.movieId}`;
+      const url = `https://localhost:44365/api/movies/${movie.movieId}`;
       axios.put(url, movie)
         .then(() => dispatch('ShowMovies'));
     },
     DeleteMovie({ dispatch }, movie) {
-      const url = `https://localhost:5001/api/movies/${movie.movieId}`;
+      const url = `https://localhost:44365/api/movies/${movie.movieId}`;
       axios.delete(url)
         .then(() => dispatch('ShowMovies'));
     },
@@ -62,8 +66,7 @@ export default {
     addMovie(state, movie) {
       state.movies.push(movie);
     },
-    yo(state, movies) {
-      console.log(movies);
+    loadMovies(state, movies) {
       state.showMovies = movies;
     },
   },

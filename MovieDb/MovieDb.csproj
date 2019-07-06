@@ -22,7 +22,7 @@
 
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm --prefix ./client-app run build" />
+    <Exec Command="npm --prefix ./client-app run dev" />
   </Target>
 
 </Project>

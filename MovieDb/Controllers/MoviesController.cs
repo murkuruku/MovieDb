@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieDataBase.Data;
@@ -30,38 +28,34 @@ namespace MovieDb.Controllers
 
         // GET: api/Movies/All
         [HttpGet("All")]
-        public IActionResult All()
+        public  IEnumerable<Movie> All()
         {
-            List<Movie> movies = _context.Movies.ToList();
+            var movies = _context.Movies.ToList();
 
-            var actors = (from a in _context.Actors
-                          join ma in _context.MovieActors on a.ActorId equals ma.ActorId
-                          select new
-                          {
-                              ma.MovieId,
-                              a.Age,
-                              a.Name,
-                              a.ActorId
-                          }).ToList();
+            var actors =  _context.MovieActors.ToList();
 
             var result = movies.GroupJoin(actors,
-                         movie => movie.MovieId,
                          actor => actor.MovieId,
+                         movie => movie.MovieId,
                          (movie, actorColletion) =>
-                             new
+                             new Movie
                              {
-                                 movieId = movie.MovieId,
-                                 movieTitle = movie.Title,
-                                 movieGenre = movie.Genre,
-                                 movieReleas = movie.ReleasYear,
-                                 Actors = actorColletion.Select(actor => {
-                                     var act = new { Id = actor.ActorId, Name = actor.Name, Age = actor.Age };
-                                     return act;
+                                 MovieId = movie.MovieId,
+                                 Title = movie.Title,
+                                 ReleasYear = movie.ReleasYear,
+                                 Genre =movie.Genre,
+                                 MovieActors = actorColletion.Select(actor => {
+                                     var mv = new MovieActors
+                                     {
+                                         MovieId = movie.MovieId,
+                                         ActorId = actor.ActorId,
+                                     };
+                                     return mv;
                                  })
 
                              });
 
-            return Ok(result);
+            return result;
         }
 
         // GET: api/Movies/5
@@ -88,11 +82,11 @@ namespace MovieDb.Controllers
             }
 
             _context.Entry(movie).State = EntityState.Modified;
-            var moviesss = new List<MovieActors>();
-            moviesss.AddRange(movie.MovieActors);
+            var movies = new List<MovieActors>();
+            movies.AddRange(movie.MovieActors);
             var tablema = _context.MovieActors.Where(x => x.MovieId == movie.MovieId).ToList();
             _context.MovieActors.RemoveRange(tablema);
-            _context.MovieActors.AddRange(moviesss);
+            _context.MovieActors.AddRange(movies);
                                 
             try
             {

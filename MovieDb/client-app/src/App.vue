@@ -12,6 +12,9 @@ export default {
 </script>
 
 <style>
-  @import 'bootstrap';
+.container{
+  margin: 0 250px 0  250px;
+
+}
 
 </style>

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieDataBase.Data;
@@ -33,17 +31,7 @@ namespace MovieDb.Controllers
         public  IEnumerable<Actor> All()
         {
             var actors =  _context.Actors.ToList();
-
-            var movies = (from a in _context.Movies
-                          join ma in _context.MovieActors on a.MovieId equals ma.MovieId
-                          select new
-                          {
-                              ma.ActorId,
-                              a.Title,
-                              a.ReleasYear,
-                              a.Genre,
-                              a.MovieId
-                          }).ToList();
+            var movies = _context.MovieActors.ToList();
 
             var result = actors.GroupJoin(movies,
                          actor => actor.ActorId,
@@ -65,7 +53,7 @@ namespace MovieDb.Controllers
 
                              });
 
-            return result;
+            return  result;
         }
 
 
@@ -124,6 +112,7 @@ namespace MovieDb.Controllers
         public async Task<ActionResult<Actor>> PostActor(Actor actor)
         {
             _context.Actors.Add(actor);
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetActor", new { id = actor.ActorId }, actor);

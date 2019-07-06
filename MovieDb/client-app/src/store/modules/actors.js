@@ -8,26 +8,32 @@ export default {
   },
   actions: {
     AddActor({ dispatch }, actor) {
-      axios.post('https://localhost:5001/api/actors', actor)
+      axios.post('https://localhost:44365/api/actors', actor)
         .then(() => dispatch('AllActors'));
     },
     AllActors({ commit }) {
-      axios.get('https://localhost:5001/api/actors')
+      axios.get('https://localhost:44365/api/actors')
         .then(result => commit('allActors', result.data));
     },
     ShowActors({ commit }) {
-      axios.get('https://localhost:5001/api/actors/all')
+      axios.get('https://localhost:44365/api/actors/all')
         .then(results => commit('showActors', results.data));
     },
     DeleteActor({ dispatch }, actorId) {
-      const url = `https://localhost:5001/api/actors/${actorId}`;
+      const url = `https://localhost:44365/api/actors/${actorId}`;
       axios.delete(url)
         .then(() => dispatch('AllActors'));
     },
     EditActor({ dispatch }, actor) {
-      const url = `https://localhost:5001/api/actors/${actor.actorId}`;
-      axios.put(url, actor)
-        .then(() => dispatch('ShowActors'));
+      return new Promise((resolve) => {
+        const url = `https://localhost:44365/api/actors/${actor.actorId}`;
+        axios.put(url, actor)
+          .then(() => {
+            dispatch('ShowActors', 'AllActors');
+            resolve('Done');
+          });
+      },
+      );
     },
   },
   mutations: {
