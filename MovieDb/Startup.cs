@@ -21,11 +21,8 @@ namespace MovieDb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
 
             services.AddDbContextPool<MovieDbContext>(options => {
-
-                options.EnableSensitiveDataLogging(true);
                 options.UseSqlServer(Configuration.GetConnectionString("MovieDataBaseDb"));
             });
 
@@ -35,7 +32,6 @@ namespace MovieDb
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
